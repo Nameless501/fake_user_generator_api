@@ -45,36 +45,34 @@ class Random {
         address: this._generateRandomAddress(),
     });
 
-    _getMultiplePersons = () => {
-        this._newData = this._localeFaker.helpers.multiple(
-            this._generateRandomPerson,
-            {
-                count:
-                    this._page > 1
-                        ? NEXT_PAGE_ELEMENTS_COUNT
-                        : FIRST_PAGE_ELEMENTS_COUNT,
-            }
-        );
-    };
+    _getMultiplePersons = () =>
+        this._localeFaker.helpers.multiple(this._generateRandomPerson, {
+            count:
+                this._page > 1
+                    ? NEXT_PAGE_ELEMENTS_COUNT
+                    : FIRST_PAGE_ELEMENTS_COUNT,
+        });
 
     _storeData = () => {
         this._allData =
-            this._page > 1
-                ? [...this._allData, ...this._newData]
-                : this._newData;
+            this._page === 1
+                ? this._newData
+                : [...this._allData, ...this._newData];
     };
 
     sendRandomData = (req, res, next) => {
         try {
             this._parseParams(req);
             this._setFakerParams();
-            this._getMultiplePersons();
+            this._newData = this._getMultiplePersons();
             this._storeData();
             res.send(this._newData);
         } catch (err) {
             next(err);
         }
     };
+
+    getCurrentData = () => this._allData;
 }
 
 module.exports = Random;

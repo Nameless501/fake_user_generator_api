@@ -22,8 +22,38 @@ const corsConfig = {
     credentials: true,
 };
 
+const csvParserConfig = {
+    fields: [
+        {
+            label: '№',
+            value: 'ind',
+        },
+        {
+            label: 'Id',
+            value: 'id',
+        },
+        {
+            label: 'Name',
+            value: 'name',
+        },
+        {
+            label: 'Email',
+            value: 'email',
+        },
+        {
+            label: 'Phone number',
+            value: 'phone',
+        },
+        {
+            label: 'Address',
+            value: 'address',
+        },
+    ],
+};
+
 module.exports = {
     corsConfig,
     loggerConfig,
     addressMethodsConfig,
+    csvParserConfig,
 };
