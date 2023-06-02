@@ -1,4 +1,4 @@
-const { allFakers } = require('@faker-js/faker');
+const { allFakers, faker } = require('@faker-js/faker');
 
 const {
     FIRST_PAGE_ELEMENTS_COUNT,
@@ -8,37 +8,41 @@ const {
 const { addressMethodsConfig } = require('../utils/configs');
 
 class Random {
-    constructor() {
+    constructor(handleMistakes) {
+        this._handleMistakes = handleMistakes;
         this._allData = [];
     }
     _parseParams = (req) => {
         const { seed, page, locale, mistakes } = req.query;
         this._page = Number(page);
         this._locale = locale;
-        this._seed = seed ? Number(seed) : null;
-        this._mistakes = mistakes ? Number(mistakes) : null;
+        this._seed = seed ? Number(`${seed}${page}`) : '';
+        this._mistakes = Number(mistakes);
     };
 
     _setFakerParams = () => {
         this._localeFaker = allFakers[this._locale];
-        if (this._seed) {
-            this._localeFaker.seed(Number(`${this._seed}${this._page}`));
-        }
+        this._localeFaker.seed(this._seed);
     };
 
     _generateRandomAddress = () =>
         addressMethodsConfig
-            .reduce(
-                (address, method) => [
-                    ...address,
-                    this._localeFaker.location[method](),
-                ],
-                []
-            )
+            .reduce((address, { method, optional }) => {
+                const probability = {
+                    probability: optional
+                        ? faker.number.float({ min: 0, max: 1, precision: 0.1 })
+                        : 1,
+                };
+                const current = this._localeFaker.helpers.maybe(
+                    () => this._localeFaker.location[method](),
+                    probability
+                );
+                return current ? [...address, current] : address;
+            }, [])
             .join(', ');
 
     _generateRandomPerson = () => ({
-        id: this._localeFaker.string.uuid(),
+        id: this._localeFaker.string.numeric(10),
         email: this._localeFaker.internet.email(),
         name: this._localeFaker.person.fullName(),
         phone: this._localeFaker.phone.number(),
@@ -46,12 +50,21 @@ class Random {
     });
 
     _getMultiplePersons = () =>
-        this._localeFaker.helpers.multiple(this._generateRandomPerson, {
-            count:
-                this._page > 1
-                    ? NEXT_PAGE_ELEMENTS_COUNT
-                    : FIRST_PAGE_ELEMENTS_COUNT,
-        });
+        this._localeFaker.helpers.multiple(
+            () =>
+                this._handleMistakes({
+                    data: this._generateRandomPerson(),
+                    seed: this._seed,
+                    chance: this._mistakes,
+                    locale: this._locale,
+                }),
+            {
+                count:
+                    this._page > 1
+                        ? NEXT_PAGE_ELEMENTS_COUNT
+                        : FIRST_PAGE_ELEMENTS_COUNT,
+            }
+        );
 
     _storeData = () => {
         this._allData =

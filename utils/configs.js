@@ -1,6 +1,11 @@
 const { BASE_FRONTEND_URL } = require('./constants');
 
-const addressMethodsConfig = ['state', 'city', 'streetAddress'];
+const addressMethodsConfig = [
+    { method: 'state', optional: true },
+    { method: 'city', optional: false },
+    { method: 'streetAddress', optional: false },
+    { method: 'secondaryAddress', optional: true },
+];
 
 const loggerConfig = {
     method: {
