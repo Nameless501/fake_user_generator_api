@@ -19,7 +19,7 @@ const loggerConfig = {
 };
 
 const corsConfig = {
-    origin: [BASE_FRONTEND_URL, 'http://localhost:3001'],
+    origin: BASE_FRONTEND_URL,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     preflightContinue: false,
     optionsSuccessStatus: 204,
