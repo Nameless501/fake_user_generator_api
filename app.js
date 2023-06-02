@@ -44,11 +44,10 @@ app.use('/', require('./routers'));
 
 app.use(logger.createLogger('error'));
 
-app.use(
-    (err, req, res, next) => console.log(err)
-    // res
-    //     .status(err.statusCode ?? DEFAULT_ERROR_CODE)
-    //     .send({ message: err.statusCode ? err.message : DEFAULT_ERROR_MESSAGE })
+app.use((err, req, res, next) =>
+    res
+        .status(err.statusCode ?? DEFAULT_ERROR_CODE)
+        .send({ message: err.statusCode ? err.message : DEFAULT_ERROR_MESSAGE })
 );
 
 app.listen(PORT);
