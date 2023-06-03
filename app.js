@@ -6,8 +6,6 @@ const cors = require('cors');
 
 const helmet = require('helmet');
 
-const rateLimit = require('express-rate-limit');
-
 const Logger = require('./middlewares/Logger');
 
 const { loggerConfig } = require('./utils/configs');
@@ -32,13 +30,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(logger.createLogger('request'));
-
-app.use(
-    rateLimit({
-        windowMs: 15 * 60 * 1000,
-        max: 100,
-    })
-);
 
 app.use('/', require('./routers'));
 
