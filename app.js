@@ -10,7 +10,7 @@ const rateLimit = require('express-rate-limit');
 
 const Logger = require('./middlewares/Logger');
 
-const { corsConfig, loggerConfig } = require('./utils/configs');
+const { loggerConfig } = require('./utils/configs');
 
 const {
     DEFAULT_ERROR_CODE,
@@ -25,7 +25,7 @@ const app = express();
 
 app.use(helmet());
 
-app.use('*', cors(corsConfig));
+app.use('*', cors());
 
 app.use(express.json());
 

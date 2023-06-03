@@ -11,9 +11,17 @@ class Random {
     constructor(handleMistakes) {
         this._handleMistakes = handleMistakes;
         this._allData = [];
+        this._isSameRequest = false;
+        this._prevRequest = '';
     }
-    _parseParams = (req) => {
-        const { seed, page, locale, mistakes } = req.query;
+
+    _compareRequests = ({ seed, page, locale }) => {
+        const current = `${locale}${seed}${page}`;
+        this._isSameRequest = this._prevRequest === current;
+        this._prevRequest = current;
+    };
+
+    _saveParams = ({ seed, page, locale, mistakes }) => {
         this._page = Number(page);
         this._locale = locale;
         this._seed = seed ? Number(`${seed}${page}`) : '';
@@ -25,18 +33,25 @@ class Random {
         this._localeFaker.seed(this._seed);
     };
 
+    _parseRequestParams = (req) => {
+        const params = req.query;
+        this._saveParams(params);
+        this._setFakerParams();
+        this._compareRequests(params);
+    };
+
+    _useWithRandomProbability = (method) =>
+        this._localeFaker.helpers.maybe(method, {
+            probability: faker.number.float({ min: 0, max: 1, precision: 0.1 }),
+        });
+
     _generateRandomAddress = () =>
         addressMethodsConfig
             .reduce((address, { method, optional }) => {
-                const probability = {
-                    probability: optional
-                        ? faker.number.float({ min: 0, max: 1, precision: 0.1 })
-                        : 1,
-                };
-                const current = this._localeFaker.helpers.maybe(
-                    () => this._localeFaker.location[method](),
-                    probability
-                );
+                const currentMethod = this._localeFaker.location[method];
+                const current = optional
+                    ? this._useWithRandomProbability(() => currentMethod())
+                    : currentMethod();
                 return current ? [...address, current] : address;
             }, [])
             .join(', ');
@@ -50,36 +65,40 @@ class Random {
     });
 
     _getMultiplePersons = () =>
-        this._localeFaker.helpers.multiple(
-            () =>
-                this._handleMistakes({
-                    data: this._generateRandomPerson(),
-                    seed: this._seed,
-                    chance: this._mistakes,
-                    locale: this._locale,
-                }),
-            {
-                count:
-                    this._page > 1
-                        ? NEXT_PAGE_ELEMENTS_COUNT
-                        : FIRST_PAGE_ELEMENTS_COUNT,
-            }
-        );
+        this._localeFaker.helpers.multiple(() => this._generateRandomPerson(), {
+            count:
+                this._page > 1
+                    ? NEXT_PAGE_ELEMENTS_COUNT
+                    : FIRST_PAGE_ELEMENTS_COUNT,
+        });
 
     _storeData = () => {
         this._allData =
             this._page === 1
-                ? this._newData
-                : [...this._allData, ...this._newData];
+                ? this._resultData
+                : [...this._allData, ...this._resultData];
+    };
+
+    _setMistakes = () => {
+        this._resultData = this._currentData.map((data) =>
+            this._handleMistakes({
+                data: { ...data },
+                seed: this._seed,
+                chance: this._mistakes,
+                locale: this._locale,
+            })
+        );
     };
 
     sendRandomData = (req, res, next) => {
         try {
-            this._parseParams(req);
-            this._setFakerParams();
-            this._newData = this._getMultiplePersons();
+            this._parseRequestParams(req);
+            if(!this._isSameRequest) {
+                this._currentData = this._getMultiplePersons();
+            }
+            this._setMistakes();
             this._storeData();
-            res.send(this._newData);
+            res.send(this._resultData);
         } catch (err) {
             next(err);
         }

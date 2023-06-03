@@ -1,5 +1,3 @@
-const { FRONTEND_URL } = require('./constants');
-
 const addressMethodsConfig = [
     { method: 'state', optional: true },
     { method: 'city', optional: false },
@@ -16,14 +14,6 @@ const loggerConfig = {
         error: 'error.log',
         request: 'request.log',
     },
-};
-
-const corsConfig = {
-    origin: FRONTEND_URL,
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
 };
 
 const csvParserConfig = {
@@ -56,7 +46,6 @@ const csvParserConfig = {
 };
 
 module.exports = {
-    corsConfig,
     loggerConfig,
     addressMethodsConfig,
     csvParserConfig,

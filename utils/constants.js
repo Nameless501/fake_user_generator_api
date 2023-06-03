@@ -6,8 +6,6 @@ const NOT_FOUND_MESSAGE = 'Данные не найдены';
 
 const DEFAULT_ERROR_MESSAGE = 'Произошла ошибка';
 
-const FRONTEND_URL = 'https://task5frontend-production.up.railway.app';
-
 const FIRST_PAGE_ELEMENTS_COUNT = 20;
 
 const NEXT_PAGE_ELEMENTS_COUNT = 10;
@@ -17,7 +15,6 @@ module.exports = {
     DEFAULT_ERROR_CODE,
     NOT_FOUND_MESSAGE,
     DEFAULT_ERROR_MESSAGE,
-    FRONTEND_URL,
     NEXT_PAGE_ELEMENTS_COUNT,
     FIRST_PAGE_ELEMENTS_COUNT,
 };
