@@ -24,7 +24,6 @@ const corsConfig = {
     preflightContinue: false,
     optionsSuccessStatus: 204,
     allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
-    credentials: true,
 };
 
 const csvParserConfig = {
