@@ -93,7 +93,7 @@ class Random {
     sendRandomData = (req, res, next) => {
         try {
             this._parseRequestParams(req);
-            if(!this._isSameRequest) {
+            if (!this._isSameRequest) {
                 this._currentData = this._getMultiplePersons();
             }
             this._setMistakes();
