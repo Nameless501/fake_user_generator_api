@@ -6,7 +6,7 @@ const NOT_FOUND_MESSAGE = 'Данные не найдены';
 
 const DEFAULT_ERROR_MESSAGE = 'Произошла ошибка';
 
-const BASE_FRONTEND_URL = 'https://nameless501.github.io';
+const FRONTEND_URLS = ['https://nameless501.github.io', 'http://localhost:3000'];
 
 const FIRST_PAGE_ELEMENTS_COUNT = 20;
 

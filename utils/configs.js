@@ -1,4 +1,4 @@
-const { BASE_FRONTEND_URL } = require('./constants');
+const { FRONTEND_URLS } = require('./constants');
 
 const addressMethodsConfig = [
     { method: 'state', optional: true },
@@ -19,7 +19,7 @@ const loggerConfig = {
 };
 
 const corsConfig = {
-    origin: BASE_FRONTEND_URL,
+    origin: FRONTEND_URLS,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     preflightContinue: false,
     optionsSuccessStatus: 204,
