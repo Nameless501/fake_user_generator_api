@@ -6,7 +6,7 @@ const NOT_FOUND_MESSAGE = 'Данные не найдены';
 
 const DEFAULT_ERROR_MESSAGE = 'Произошла ошибка';
 
-const FRONTEND_URLS = ['https://nameless501.github.io', 'http://localhost:3000'];
+const FRONTEND_URL = 'https://task5frontend-production.up.railway.app';
 
 const FIRST_PAGE_ELEMENTS_COUNT = 20;
 
@@ -17,7 +17,7 @@ module.exports = {
     DEFAULT_ERROR_CODE,
     NOT_FOUND_MESSAGE,
     DEFAULT_ERROR_MESSAGE,
-    BASE_FRONTEND_URL,
+    FRONTEND_URL,
     NEXT_PAGE_ELEMENTS_COUNT,
     FIRST_PAGE_ELEMENTS_COUNT,
 };
