@@ -15,10 +15,11 @@ class Random {
         this._prevRequest = '';
     }
 
-    _compareRequests = ({ seed, page, locale }) => {
-        const current = `${locale}${seed}${page}`;
-        this._isSameRequest = this._prevRequest === current;
-        this._prevRequest = current;
+    _compareRequests = ({ seed, page, locale, sessionId }) => {
+        const currentParams = `${locale}${seed}${page}`;
+        this._isSameRequest = this._paramters === currentParams && this._sessionId === sessionId;
+        this._paramters = currentParams;
+        this._sessionId = sessionId;
     };
 
     _saveParams = ({ seed, page, locale, mistakes }) => {
